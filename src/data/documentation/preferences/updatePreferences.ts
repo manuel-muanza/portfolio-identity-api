@@ -12,6 +12,12 @@ export const updatePreferencesDocumentation: EndpointDocumentation = {
       description: 'Ativa ou desativa as notificações enviadas por e-mail.',
     },
     {
+      name: 'smsNotificationsEnabled',
+      type: 'boolean',
+      required: true,
+      description: 'Ativa ou desativa as notificações enviadas por SMS.',
+    },
+    {
       name: 'theme',
       type: 'string',
       required: true,

@@ -14,6 +14,7 @@ export async function executeRequest(
     challenge: string
     signature: string
     uploadUrl: string
+    resetToken: string
   },
 ): Promise<ApiResult> {
   const startedAt = performance.now()
@@ -28,6 +29,7 @@ export async function executeRequest(
       .replaceAll('{{challenge}}', variables.challenge)
       .replaceAll('{{signature}}', variables.signature)
       .replaceAll('{{uploadUrl}}', variables.uploadUrl)
+      .replaceAll('{{resetToken}}', variables.resetToken)
   const resolvedPath = resolveVariables(endpoint.path)
   const url = new URL(/^https?:\/\//i.test(resolvedPath) ? resolvedPath : `${baseUrl}${resolvedPath}`)
 

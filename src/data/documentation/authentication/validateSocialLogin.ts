@@ -1,15 +1,24 @@
 import type { EndpointDocumentation } from '../../../shared/types/endpoint'
 
 export const validateSocialLoginDocumentation: EndpointDocumentation = {
-  overview: 'Valida e conclui uma tentativa de autenticação iniciada por um provedor social.',
+  overview: 'Valida o ID token emitido pelo Google e conclui a autenticação social.',
   requirements: [
-    'A rota definitiva e os campos deste endpoint ainda devem ser confirmados.',
-    'Deve existir uma tentativa de login social em andamento.',
+    'Deve existir uma autenticação válida realizada no Google.',
+    'O utilizador deve copiar o ID token emitido pelo Google.',
   ],
   steps: [
-    'Primeiro execute Authentication → Social → Login.',
-    'Informe os dados recebidos do provedor social.',
-    'Execute Validar login e siga eventuais verificações indicadas pela resposta.',
+    'Realize a autenticação através do Google.',
+    'Copie o ID token devolvido pelo Google.',
+    'Cole o valor no campo idToken e execute Validar login.',
+    'Siga eventuais verificações adicionais indicadas pela resposta.',
+  ],
+  fields: [
+    {
+      name: 'idToken',
+      type: 'string',
+      required: true,
+      description: 'ID token emitido pelo Google e colado manualmente pelo utilizador.',
+    },
   ],
   notes: ['Tokens e sessionId presentes na resposta serão guardados automaticamente.'],
 }

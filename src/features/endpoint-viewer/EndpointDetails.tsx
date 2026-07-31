@@ -4,6 +4,7 @@ import { getOrCreateDeviceKeys, signDeviceChallenge } from '../../shared/api/dev
 import type { ApiResult, Endpoint, KeyValuePair } from '../../shared/types/endpoint'
 import { useAuth } from '../authentication/authContext'
 import { MfaSetupModal, type MfaSetupData } from '../authentication/MfaSetupModal'
+import { GoogleLoginModal } from '../authentication/GoogleLoginModal'
 import { EndpointDocumentation } from './EndpointDocumentation'
 import { RequestBuilder } from './RequestBuilder'
 import { ResponseViewer } from './ResponseViewer'
@@ -18,6 +19,7 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
     challenge,
     deviceId,
     uploadUrl,
+    resetToken,
     setToken,
     setRefreshToken,
     setSessionId,
@@ -29,6 +31,7 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
     setSignature,
     setUploadUrl,
     setObjectKey,
+    setResetToken,
   } = useAuth()
   const [body, setBody] = useState(endpoint.requestBody ?? '')
   const [sending, setSending] = useState(false)
@@ -36,6 +39,7 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
   const [documentationOpen, setDocumentationOpen] = useState(false)
   const [mfaSetup, setMfaSetup] = useState<MfaSetupData | null>(null)
   const [uploadResetVersion, setUploadResetVersion] = useState(0)
+  const [googleLoginOpen, setGoogleLoginOpen] = useState(endpoint.id === 'validate-social-login')
 
   async function handleSend(headers: KeyValuePair[], parameters: KeyValuePair[], binaryBody: Blob | null) {
     setResult(null)
@@ -45,7 +49,7 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
       let activePublicKeyClean = publicKeyClean
       let signature = ''
 
-      if (['login', 'social-login', 'create-account'].includes(endpoint.id)) {
+      if (['login', 'create-account'].includes(endpoint.id)) {
         const identifier = getIdentifierFromBody(body)
         if (identifier) {
           const keys = await getOrCreateDeviceKeys(identifier)
@@ -67,26 +71,39 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
         : endpoint.requestBody === undefined
           ? null
           : body
+      const latestToken = sessionStorage.getItem('api-test.token') ?? token
+      const latestRefreshToken = sessionStorage.getItem('api-test.refreshToken') ?? refreshToken
       const response = await executeRequest(endpoint, requestBody, headers, parameters, {
-        token,
-        refreshToken,
+        token: latestToken,
+        refreshToken: latestRefreshToken,
         verificationToken: sessionId,
         publicKeyClean: activePublicKeyClean,
         deviceId,
         challenge,
         signature,
         uploadUrl,
+        resetToken,
       })
       setResult(response)
 
       const receivedVariables = findResponseVariables(response.data)
-      if (receivedVariables.accessToken) setToken(receivedVariables.accessToken)
-      if (receivedVariables.refreshToken) setRefreshToken(receivedVariables.refreshToken)
+      if (receivedVariables.accessToken) {
+        sessionStorage.setItem('api-test.token', receivedVariables.accessToken)
+        setToken(receivedVariables.accessToken)
+      }
+      if (receivedVariables.refreshToken) {
+        sessionStorage.setItem('api-test.refreshToken', receivedVariables.refreshToken)
+        setRefreshToken(receivedVariables.refreshToken)
+      }
       if (receivedVariables.sessionId) setSessionId(receivedVariables.sessionId)
       if (receivedVariables.publicKeyChallenge) setChallenge(receivedVariables.publicKeyChallenge)
       if (receivedVariables.deviceId) setDeviceId(receivedVariables.deviceId)
       if (receivedVariables.uploadUrl) setUploadUrl(receivedVariables.uploadUrl)
       if (receivedVariables.objectKey) setObjectKey(receivedVariables.objectKey)
+      if (receivedVariables.resetToken) {
+        sessionStorage.setItem('api-test.resetToken', receivedVariables.resetToken)
+        setResetToken(receivedVariables.resetToken)
+      }
       if (endpoint.id === 'upload-avatar' && response.status === 200) {
         setUploadResetVersion((version) => version + 1)
       }
@@ -116,6 +133,11 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
         <h1>{endpoint.path}</h1>
       </div>
       <p className="endpoint-description">{endpoint.description}</p>
+      {endpoint.id === 'validate-social-login' && (
+        <button className="open-google-login" type="button" onClick={() => setGoogleLoginOpen(true)}>
+          <span>G</span> Obter ID token do Google
+        </button>
+      )}
       <RequestBuilder
         key={`${endpoint.id}-${uploadResetVersion}`}
         endpoint={endpoint}
@@ -128,6 +150,11 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
       <ResponseViewer result={result} loading={sending} />
       <EndpointDocumentation endpoint={endpoint} open={documentationOpen} onClose={() => setDocumentationOpen(false)} />
       {mfaSetup && <MfaSetupModal data={mfaSetup} onContinue={() => setMfaSetup(null)} />}
+      <GoogleLoginModal
+        open={googleLoginOpen}
+        onClose={() => setGoogleLoginOpen(false)}
+        onToken={(idToken) => setBody(JSON.stringify({ idToken }, null, 2))}
+      />
     </div>
   )
 }
@@ -140,6 +167,7 @@ interface ResponseVariables {
   deviceId?: string
   uploadUrl?: string
   objectKey?: string
+  resetToken?: string
 }
 
 function findResponseVariables(value: unknown, found: ResponseVariables = {}): ResponseVariables {
@@ -153,6 +181,7 @@ function findResponseVariables(value: unknown, found: ResponseVariables = {}): R
   if (typeof record.deviceId === 'string') found.deviceId = record.deviceId
   if (typeof record.uploadUrl === 'string') found.uploadUrl = record.uploadUrl
   if (typeof record.objectKey === 'string') found.objectKey = record.objectKey
+  if (typeof record.resetToken === 'string') found.resetToken = record.resetToken
 
   for (const nestedValue of Object.values(record)) {
     findResponseVariables(nestedValue, found)

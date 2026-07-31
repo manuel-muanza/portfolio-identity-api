@@ -23,6 +23,8 @@ export interface AuthContextValue {
   setUploadUrl: (uploadUrl: string) => void
   objectKey: string
   setObjectKey: (objectKey: string) => void
+  resetToken: string
+  setResetToken: (resetToken: string) => void
   authenticated: boolean
 }
 

@@ -3,13 +3,13 @@ import { createAccountDocumentation } from './documentation/account/createAccoun
 import { getPreferencesDocumentation } from './documentation/preferences/getPreferences'
 import { updatePreferencesDocumentation } from './documentation/preferences/updatePreferences'
 import { createAvatarUploadUrlDocumentation } from './documentation/profile/createAvatarUploadUrl'
+import { changePasswordDocumentation } from './documentation/profile/changePassword'
 import { deleteAvatarDocumentation } from './documentation/profile/deleteAvatar'
 import { getProfileDocumentation } from './documentation/profile/getProfile'
 import { uploadAvatarDocumentation } from './documentation/profile/uploadAvatar'
 import { loginDocumentation } from './documentation/authentication/login'
 import { logoutDocumentation } from './documentation/authentication/logout'
 import { refreshTokenDocumentation } from './documentation/authentication/refreshToken'
-import { socialLoginDocumentation } from './documentation/authentication/socialLogin'
 import { validateSocialLoginDocumentation } from './documentation/authentication/validateSocialLogin'
 import { generateCodeDocumentation } from './documentation/security/generateCode'
 import { deleteDeviceDocumentation } from './documentation/security/deleteDevice'
@@ -20,6 +20,9 @@ import { enableMfaMethodDocumentation } from './documentation/security/enableMfa
 import { securityListDevicesDocumentation } from './documentation/security/listDevices'
 import { listMfaMethodsDocumentation } from './documentation/security/listMfaMethods'
 import { mfaStatusDocumentation } from './documentation/security/mfaStatus'
+import { requestPasswordResetDocumentation } from './documentation/security/requestPasswordReset'
+import { validatePasswordResetDocumentation } from './documentation/security/validatePasswordReset'
+import { completePasswordResetDocumentation } from './documentation/security/completePasswordReset'
 import { startMfaDocumentation } from './documentation/security/startMfa'
 import { securityVerifyDeviceDocumentation } from './documentation/security/verifyDevice'
 import { verifyCodeDocumentation } from './documentation/security/verifyCode'
@@ -74,23 +77,13 @@ export const endpointCollections: EndpointCollection[] = [
         name: 'Social',
         endpoints: [
           {
-            id: 'social-login',
-            name: 'Login',
-            method: 'POST',
-            path: '/api/v1/auth/social/login',
-            description: 'Inicia uma autenticação através de um provedor social.',
-            documentation: socialLoginDocumentation,
-            requestBody: '{\n  "provider": ""\n}',
-            response: {},
-          },
-          {
             id: 'validate-social-login',
-            name: 'Validar login',
+            name: 'Login com Google',
             method: 'POST',
-            path: '/api/v1/auth/social/validate',
-            description: 'Valida e conclui uma autenticação social.',
+            path: '/api/v1/auth/social/google',
+            description: 'Valida e conclui uma autenticação através do Google.',
             documentation: validateSocialLoginDocumentation,
-            requestBody: '{\n  "code": ""\n}',
+            requestBody: '{\n  "idToken": ""\n}',
             response: {},
           },
         ],
@@ -165,6 +158,22 @@ export const endpointCollections: EndpointCollection[] = [
           },
         ],
       },
+      {
+        id: 'change-password',
+        name: 'Mudar Senha',
+        endpoints: [
+          {
+            id: 'update-password',
+            name: 'Atualizar senha',
+            method: 'PUT',
+            path: '/api/v1/me/password',
+            description: 'Altera a palavra-passe do utilizador autenticado.',
+            documentation: changePasswordDocumentation,
+            requestBody: '{\n  "currentPassword": "b968653dcc",\n  "newPassword": "Mwanza_2026",\n  "confirmPassword": "Mwanza_2026"\n}',
+            response: {},
+          },
+        ],
+      },
     ],
   },
   {
@@ -179,7 +188,7 @@ export const endpointCollections: EndpointCollection[] = [
         path: '/api/v1/me/preferences',
         description: 'Atualiza as preferências do utilizador.',
         documentation: updatePreferencesDocumentation,
-        requestBody: '{\n  "emailNotificationsEnabled": true,\n  "theme": "DARK",\n  "language": "en-us"\n}',
+        requestBody: '{\n  "emailNotificationsEnabled": true,\n  "smsNotificationsEnabled": false,\n  "theme": "DARK",\n  "language": "en-us"\n}',
         response: {},
       },
       {
@@ -304,8 +313,38 @@ export const endpointCollections: EndpointCollection[] = [
       },
       {
         id: 'password-reset',
-        name: 'Resetar palavra-passe',
-        endpoints: [],
+        name: 'Repor Senha',
+        endpoints: [
+          {
+            id: 'request-password-reset',
+            name: 'Solicitar reposição',
+            method: 'POST',
+            path: '/api/v1/auth/password/reset/request',
+            description: 'Inicia o processo de reposição da palavra-passe.',
+            documentation: requestPasswordResetDocumentation,
+            requestBody: '{\n  "fullName": "Manuel Muanza",\n  "email": "manuelmuanza20@gmail.com"\n}',
+            response: {},
+          },
+          {
+            id: 'validate-password-reset',
+            name: 'Validar operação',
+            method: 'GET',
+            path: '/api/v1/auth/password/reset/{{resetToken}}',
+            description: 'Valida uma operação de reposição da palavra-passe.',
+            documentation: validatePasswordResetDocumentation,
+            response: {},
+          },
+          {
+            id: 'complete-password-reset',
+            name: 'Mudar senha',
+            method: 'PATCH',
+            path: '/api/v1/auth/password/reset/{{resetToken}}',
+            description: 'Define uma nova palavra-passe para a conta.',
+            documentation: completePasswordResetDocumentation,
+            requestBody: '{\n  "newPassword": "Mwanza@2026",\n  "confirmPassword": "Mwanza@2026"\n}',
+            response: {},
+          },
+        ],
       },
       {
         id: 'security-devices',

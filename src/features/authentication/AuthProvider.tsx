@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [signature, setSignature] = useSessionValue('api-test.signature')
   const [uploadUrl, setUploadUrl] = useSessionValue('api-test.uploadUrl')
   const [objectKey, setObjectKey] = useSessionValue('api-test.objectKey')
+  const [resetToken, setResetToken] = useSessionValue('api-test.resetToken')
   const value = useMemo(
     () => ({
       token,
@@ -51,6 +52,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUploadUrl,
       objectKey,
       setObjectKey,
+      resetToken,
+      setResetToken,
       authenticated: token.trim().length > 0,
     }),
     [
@@ -76,6 +79,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUploadUrl,
       objectKey,
       setObjectKey,
+      resetToken,
+      setResetToken,
     ],
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

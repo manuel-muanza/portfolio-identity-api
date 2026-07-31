@@ -18,14 +18,14 @@ interface RequestBuilderProps {
 }
 
 export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, onOpenDocumentation }: RequestBuilderProps) {
-  const { sessionId, deviceId, uploadUrl } = useAuth()
+  const { sessionId, deviceId, uploadUrl, resetToken } = useAuth()
   const hasBody = endpoint.requestBody !== undefined || endpoint.bodyType === 'binary'
   const [tab, setTab] = useState<Tab>(hasBody ? 'body' : 'params')
   const [headers, setHeaders] = useState<KeyValuePair[]>([
     ...(hasBody
       ? [{ id: 'content-type', key: 'Content-Type', value: endpoint.bodyType === 'binary' ? 'image/png' : 'application/json' }]
       : []),
-    ...(['login', 'refresh-token', 'social-login', 'validate-social-login', 'create-account', 'send-verification-code', 'verify-verification-code', 'upload-avatar'].includes(endpoint.id)
+    ...(['login', 'refresh-token', 'validate-social-login', 'create-account', 'send-verification-code', 'verify-verification-code', 'upload-avatar', 'request-password-reset', 'validate-password-reset', 'complete-password-reset'].includes(endpoint.id)
       ? []
       : [{ id: 'authorization', key: 'Authorization', value: 'Bearer {{token}}' }]),
   ])
@@ -37,9 +37,12 @@ export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, 
   const resolvedVisiblePath = deviceId
     ? visiblePath.replaceAll('{{deviceId}}', deviceId)
     : visiblePath
+  const resolvedTokenPath = resetToken
+    ? resolvedVisiblePath.replaceAll('{{resetToken}}', resetToken)
+    : resolvedVisiblePath
   const requestUrl = endpoint.path === '{{uploadUrl}}' && uploadUrl
     ? uploadUrl
-    : `${import.meta.env.VITE_API_BASE_URL}${resolvedVisiblePath}`
+    : `${import.meta.env.VITE_API_BASE_URL}${resolvedTokenPath}`
 
   return (
     <>
