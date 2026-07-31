@@ -15,9 +15,9 @@ interface MainLayoutProps {
 export function MainLayout({ children, selectedId, sidebarOpen, onMenuToggle, onSelect }: MainLayoutProps) {
   return (
     <div className="portal">
-      <Header onMenuToggle={onMenuToggle} />
+      <Header onMenuToggle={onMenuToggle} menuOpen={sidebarOpen} />
       <div className="workspace">
-        <Sidebar selectedId={selectedId} open={sidebarOpen} onSelect={onSelect} />
+        <Sidebar selectedId={selectedId} open={sidebarOpen} onClose={onMenuToggle} onSelect={onSelect} />
         <main className="main-content">{children}</main>
       </div>
       <Footer />

@@ -32,6 +32,7 @@
 }
 
 .brand,
+.header-left,
 .header-actions,
 .environment,
 .auth-status,
@@ -48,6 +49,11 @@
   font-size: 15px;
   font-weight: 800;
   letter-spacing: -.2px;
+}
+
+.header-left {
+  gap: 10px;
+  min-width: 0;
 }
 
 .brand-mark {
@@ -336,6 +342,10 @@
   border-right: 1px solid var(--line);
 }
 
+.sidebar-backdrop {
+  display: none;
+}
+
 .sidebar-label {
   margin: 0 10px 20px;
   color: #a2aaba;
@@ -572,10 +582,13 @@
 }
 
 .endpoint-heading h1 {
+  min-width: 0;
   margin: 0;
   color: #172033;
   font-size: 25px;
   letter-spacing: -.7px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .method-badge {
@@ -672,10 +685,14 @@
 }
 
 .documentation-drawer-header small {
+  max-width: 330px;
   margin-top: 2px;
+  overflow: hidden;
   color: #929bad;
   font-family: 'DM Mono', monospace;
   font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .documentation-close {
@@ -1675,6 +1692,13 @@
   min-height: 45px;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.google-button-container > div,
+.google-button-container iframe {
+  max-width: 100% !important;
 }
 
 .google-button-loading {
@@ -1831,6 +1855,10 @@
     padding: 0 16px;
   }
 
+  .header-actions {
+    gap: 8px;
+  }
+
   .architecture-menu-button {
     width: 36px;
     height: 36px;
@@ -1877,12 +1905,35 @@
     box-shadow: 10px 0 30px rgba(18, 26, 46, .14);
   }
 
+  .sidebar-backdrop {
+    position: fixed;
+    top: 62px;
+    right: 0;
+    bottom: 54px;
+    left: 0;
+    z-index: 14;
+    display: block;
+    visibility: hidden;
+    padding: 0;
+    opacity: 0;
+    background: rgba(17, 26, 46, .28);
+    border: 0;
+    cursor: default;
+    transition: opacity .25s, visibility .25s;
+  }
+
+  .sidebar-backdrop.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+
   .sidebar.open {
     transform: translateX(0);
   }
 
   .main-content {
     padding: 28px 17px 40px;
+    overflow-x: hidden;
   }
 
   .request-url {
@@ -1932,7 +1983,51 @@
   }
 
   .footer {
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+
+  .google-modal-backdrop {
+    padding: 10px;
+  }
+
+  .google-modal {
+    width: 100%;
+    max-height: calc(100vh - 20px);
+    border-radius: 11px;
+  }
+
+  .google-modal-header {
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .google-modal-header > div {
+    min-width: 0;
+  }
+
+  .google-modal-header p {
+    line-height: 1.45;
+  }
+
+  .google-modal-content {
+    padding: 17px 15px;
+  }
+
+  .google-button-container {
     justify-content: center;
+  }
+
+  .google-token-result textarea {
+    min-height: 75px;
+  }
+
+  .google-modal-footer {
+    padding: 12px 15px;
+  }
+
+  .google-modal-footer button {
+    width: 100%;
   }
 
 }

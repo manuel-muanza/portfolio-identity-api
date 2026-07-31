@@ -54,7 +54,7 @@ export function GoogleLoginModal({ open, onToken, onClose }: GoogleLoginModalPro
       window.google.accounts.id.renderButton(buttonContainer.current, {
         theme: 'outline',
         size: 'large',
-        width: 320,
+        width: Math.min(320, Math.max(220, window.innerWidth - 76)),
         text: 'continue_with',
         shape: 'rectangular',
       })
