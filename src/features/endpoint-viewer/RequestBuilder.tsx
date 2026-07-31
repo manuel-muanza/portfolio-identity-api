@@ -25,7 +25,7 @@ export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, 
     ...(hasBody
       ? [{ id: 'content-type', key: 'Content-Type', value: endpoint.bodyType === 'binary' ? 'image/png' : 'application/json' }]
       : []),
-    ...(['login', 'refresh-token', 'validate-social-login', 'create-account', 'send-verification-code', 'verify-verification-code', 'upload-avatar', 'request-password-reset', 'validate-password-reset', 'complete-password-reset'].includes(endpoint.id)
+    ...(['login', 'refresh-token', 'validate-social-login', 'create-account', 'create-account-google', 'send-verification-code', 'verify-verification-code', 'upload-avatar', 'request-password-reset', 'validate-password-reset', 'complete-password-reset'].includes(endpoint.id)
       ? []
       : [{ id: 'authorization', key: 'Authorization', value: 'Bearer {{token}}' }]),
   ])

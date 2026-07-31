@@ -1,5 +1,6 @@
 import type { EndpointCollection } from '../shared/types/endpoint'
 import { createAccountDocumentation } from './documentation/account/createAccount'
+import { createAccountGoogleDocumentation } from './documentation/account/createAccountGoogle'
 import { getPreferencesDocumentation } from './documentation/preferences/getPreferences'
 import { updatePreferencesDocumentation } from './documentation/preferences/updatePreferences'
 import { createAvatarUploadUrlDocumentation } from './documentation/profile/createAvatarUploadUrl'
@@ -40,7 +41,7 @@ export const endpointCollections: EndpointCollection[] = [
         path: '/api/v1/auth/login',
         description: 'Autentica um utilizador com e-mail e palavra-passe.',
         documentation: loginDocumentation,
-        requestBody: '{\n  "type": "EMAIL",\n  "identifier": "manuelmuanza20@gmail.com",\n  "password": "Mwanza_2026",\n  "publicKey": "{{public_key_clean}}",\n  "trustThisDevice": true\n}',
+        requestBody: '{\n  "type": "EMAIL",\n  "identifier": "exemplo@gmail.com",\n  "password": "MinhaSenha@2026",\n  "publicKey": "{{public_key_clean}}",\n  "trustThisDevice": true\n}',
         response: {
           success: true,
           data: {
@@ -102,7 +103,17 @@ export const endpointCollections: EndpointCollection[] = [
         path: '/api/v1/me/account/create',
         description: 'Cria uma nova conta de utilizador.',
         documentation: createAccountDocumentation,
-        requestBody: '{\n  "firstName": "Pedro",\n  "lastName": "Oscar",\n  "identifierType": "EMAIL",\n  "identifier": "pedrooscar008@gmail.com",\n  "password": "Mwanza_2026"\n}',
+        requestBody: '{\n  "firstName": "Manuel",\n  "lastName": "Muanza",\n  "identifierType": "EMAIL",\n  "identifier": "exemplo@gmail.com",\n  "password": "MinhaSenha@2026"\n}',
+        response: {},
+      },
+      {
+        id: 'create-account-google',
+        name: 'Criar conta com Google',
+        method: 'POST',
+        path: '/api/v1/me/account/social/google',
+        description: 'Cria uma nova conta através da autenticação Google.',
+        documentation: createAccountGoogleDocumentation,
+        requestBody: '{\n  "idToken": ""\n}',
         response: {},
       },
     ],
@@ -169,7 +180,7 @@ export const endpointCollections: EndpointCollection[] = [
             path: '/api/v1/me/password',
             description: 'Altera a palavra-passe do utilizador autenticado.',
             documentation: changePasswordDocumentation,
-            requestBody: '{\n  "currentPassword": "b968653dcc",\n  "newPassword": "Mwanza_2026",\n  "confirmPassword": "Mwanza_2026"\n}',
+            requestBody: '{\n  "currentPassword": "MinhaSenha@2026",\n  "newPassword": "NovaSenha@2026",\n  "confirmPassword": "NovaSenha@2026"\n}',
             response: {},
           },
         ],
@@ -322,7 +333,7 @@ export const endpointCollections: EndpointCollection[] = [
             path: '/api/v1/auth/password/reset/request',
             description: 'Inicia o processo de reposição da palavra-passe.',
             documentation: requestPasswordResetDocumentation,
-            requestBody: '{\n  "fullName": "Manuel Muanza",\n  "email": "manuelmuanza20@gmail.com"\n}',
+            requestBody: '{\n  "fullName": "Manuel Muanza",\n  "email": "exemplo@gmail.com"\n}',
             response: {},
           },
           {
@@ -341,7 +352,7 @@ export const endpointCollections: EndpointCollection[] = [
             path: '/api/v1/auth/password/reset/{{resetToken}}',
             description: 'Define uma nova palavra-passe para a conta.',
             documentation: completePasswordResetDocumentation,
-            requestBody: '{\n  "newPassword": "Mwanza@2026",\n  "confirmPassword": "Mwanza@2026"\n}',
+            requestBody: '{\n  "newPassword": "NovaSenha@2026",\n  "confirmPassword": "NovaSenha@2026"\n}',
             response: {},
           },
         ],

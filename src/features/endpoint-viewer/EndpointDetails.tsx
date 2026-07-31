@@ -39,7 +39,8 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
   const [documentationOpen, setDocumentationOpen] = useState(false)
   const [mfaSetup, setMfaSetup] = useState<MfaSetupData | null>(null)
   const [uploadResetVersion, setUploadResetVersion] = useState(0)
-  const [googleLoginOpen, setGoogleLoginOpen] = useState(endpoint.id === 'validate-social-login')
+  const usesGoogleLogin = ['validate-social-login', 'create-account-google'].includes(endpoint.id)
+  const [googleLoginOpen, setGoogleLoginOpen] = useState(usesGoogleLogin)
 
   async function handleSend(headers: KeyValuePair[], parameters: KeyValuePair[], binaryBody: Blob | null) {
     setResult(null)
@@ -133,7 +134,7 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
         <h1>{endpoint.path}</h1>
       </div>
       <p className="endpoint-description">{endpoint.description}</p>
-      {endpoint.id === 'validate-social-login' && (
+      {usesGoogleLogin && (
         <button className="open-google-login" type="button" onClick={() => setGoogleLoginOpen(true)}>
           <span>G</span> Obter ID token do Google
         </button>
