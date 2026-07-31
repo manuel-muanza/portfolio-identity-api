@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+
+# Build outputs and tooling caches
+dist/
+dist-ssr/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Local environment overrides and private configuration
+# The base .env is intentionally versioned because it only contains the
+# public API URL required to run this portal.
+.env.local
+.env.*.local
+*.local
+.npmrc.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Temporary files
+tmp/
+temp/
+.cache/
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Keys, certificates and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+
+# Codex/agent workspace metadata
+.agents/
+.codex/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.fleet/
+.history/
+.project
+.classpath
+.settings/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE and swap files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
