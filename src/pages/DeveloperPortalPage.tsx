@@ -5,12 +5,33 @@ import { MainLayout } from '../shared/components/MainLayout'
 import type { Endpoint } from '../shared/types/endpoint'
 
 export function DeveloperPortalPage() {
-  const [selectedEndpoint, setSelectedEndpoint] = useState(endpointCollections[0].endpoints[0])
+  const initialEndpoint = endpointCollections[0].endpoints[0]
+  const [openEndpoints, setOpenEndpoints] = useState<Endpoint[]>([initialEndpoint])
+  const [activeEndpointId, setActiveEndpointId] = useState(initialEndpoint.id)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const selectedEndpoint = openEndpoints.find((endpoint) => endpoint.id === activeEndpointId) ?? openEndpoints[0]
 
   function handleSelect(endpoint: Endpoint) {
-    setSelectedEndpoint(endpoint)
+    setOpenEndpoints((currentEndpoints) =>
+      currentEndpoints.some((currentEndpoint) => currentEndpoint.id === endpoint.id)
+        ? currentEndpoints
+        : [...currentEndpoints, endpoint],
+    )
+    setActiveEndpointId(endpoint.id)
     setSidebarOpen(false)
+  }
+
+  function closeEndpoint(endpointId: string) {
+    if (openEndpoints.length === 1) return
+
+    const closingIndex = openEndpoints.findIndex((endpoint) => endpoint.id === endpointId)
+    const remainingEndpoints = openEndpoints.filter((endpoint) => endpoint.id !== endpointId)
+    setOpenEndpoints(remainingEndpoints)
+
+    if (activeEndpointId === endpointId) {
+      const nextEndpoint = remainingEndpoints[Math.min(closingIndex, remainingEndpoints.length - 1)]
+      setActiveEndpointId(nextEndpoint.id)
+    }
   }
 
   return (
@@ -20,7 +41,42 @@ export function DeveloperPortalPage() {
       onMenuToggle={() => setSidebarOpen((value) => !value)}
       onSelect={handleSelect}
     >
-      <EndpointDetails key={selectedEndpoint.id} endpoint={selectedEndpoint} />
+      <div className="endpoint-tabs" role="tablist" aria-label="Requisições abertas">
+        {openEndpoints.map((endpoint) => (
+          <div className={`endpoint-tab ${endpoint.id === activeEndpointId ? 'active' : ''}`} key={endpoint.id}>
+            <button
+              className="endpoint-tab-select"
+              type="button"
+              role="tab"
+              aria-selected={endpoint.id === activeEndpointId}
+              onClick={() => setActiveEndpointId(endpoint.id)}
+            >
+              <span className={`method method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</span>
+              <span>{endpoint.name}</span>
+            </button>
+            {openEndpoints.length > 1 && (
+              <button
+                className="endpoint-tab-close"
+                type="button"
+                aria-label={`Fechar ${endpoint.name}`}
+                onClick={() => closeEndpoint(endpoint.id)}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {openEndpoints.map((endpoint) => (
+        <div
+          className={`endpoint-tab-panel ${endpoint.id === activeEndpointId ? 'active' : ''}`}
+          key={endpoint.id}
+          role="tabpanel"
+        >
+          <EndpointDetails endpoint={endpoint} />
+        </div>
+      ))}
     </MainLayout>
   )
 }
