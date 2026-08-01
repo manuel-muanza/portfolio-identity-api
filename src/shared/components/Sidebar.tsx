@@ -1,6 +1,7 @@
 import { endpointCollections } from '../../data/endpointCollections'
 import type { Endpoint } from '../types/endpoint'
 import { SidebarGroup } from './SidebarGroup'
+import { useI18n } from '../i18n/i18nContext'
 
 interface SidebarProps {
   selectedId: string
@@ -10,12 +11,13 @@ interface SidebarProps {
 }
 
 export function Sidebar({ selectedId, open, onClose, onSelect }: SidebarProps) {
+  const { tr } = useI18n()
   return (
     <>
       <button
         className={`sidebar-backdrop ${open ? 'visible' : ''}`}
         type="button"
-        aria-label="Fechar menu lateral"
+        aria-label={tr('Fechar menu lateral')}
         tabIndex={open ? 0 : -1}
         onClick={onClose}
       />

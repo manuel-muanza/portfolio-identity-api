@@ -8,8 +8,10 @@ import { GoogleLoginModal } from '../authentication/GoogleLoginModal'
 import { EndpointDocumentation } from './EndpointDocumentation'
 import { RequestBuilder } from './RequestBuilder'
 import { ResponseViewer } from './ResponseViewer'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
+  const { tr } = useI18n()
   const {
     token,
     refreshToken,
@@ -53,7 +55,10 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
       if (['login', 'create-account'].includes(endpoint.id)) {
         const identifier = getIdentifierFromBody(body)
         if (identifier) {
-          const keys = await getOrCreateDeviceKeys(identifier)
+          const mustRotateKeys = endpoint.id === 'login'
+            && sessionStorage.getItem('api-test.rotateDeviceKeys') === 'true'
+          const keys = await getOrCreateDeviceKeys(identifier, mustRotateKeys)
+          if (mustRotateKeys) sessionStorage.removeItem('api-test.rotateDeviceKeys')
           activePrivateKey = keys.privateKey
           activePublicKeyClean = keys.publicKeyClean
           setPrivateKey(keys.privateKey)
@@ -98,12 +103,23 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
       }
       if (receivedVariables.sessionId) setSessionId(receivedVariables.sessionId)
       if (receivedVariables.publicKeyChallenge) setChallenge(receivedVariables.publicKeyChallenge)
+      if (receivedVariables.publicKeyChallengeWasNull) {
+        setChallenge('')
+        setSignature('')
+        sessionStorage.removeItem('api-test.challenge')
+        sessionStorage.removeItem('api-test.signature')
+        if (endpoint.id === 'login' && isTrustedDeviceLogin(body)) {
+          sessionStorage.setItem('api-test.rotateDeviceKeys', 'true')
+        }
+      }
       if (receivedVariables.deviceId) setDeviceId(receivedVariables.deviceId)
       if (receivedVariables.uploadUrl) setUploadUrl(receivedVariables.uploadUrl)
       if (receivedVariables.objectKey) setObjectKey(receivedVariables.objectKey)
-      if (receivedVariables.resetToken) {
-        sessionStorage.setItem('api-test.resetToken', receivedVariables.resetToken)
-        setResetToken(receivedVariables.resetToken)
+      const receivedResetToken = receivedVariables.resetToken
+        ?? getResetTokenFromLink(receivedVariables.resetLink)
+      if (receivedResetToken) {
+        sessionStorage.setItem('api-test.resetToken', receivedResetToken)
+        setResetToken(receivedResetToken)
       }
       if (endpoint.id === 'upload-avatar' && response.status === 200) {
         setUploadResetVersion((version) => version + 1)
@@ -117,8 +133,8 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
         status: 0,
         duration: 0,
         data: {
-          error: 'Não foi possível conectar ao serviço de API.',
-          message: error instanceof Error ? error.message : 'Erro de conexão desconhecido.',
+          error: tr('Não foi possível conectar ao serviço de API.'),
+          message: error instanceof Error ? error.message : tr('Erro de conexão desconhecido.'),
         },
       })
     } finally {
@@ -128,15 +144,15 @@ export function EndpointDetails({ endpoint }: { endpoint: Endpoint }) {
 
   return (
     <div className="content-wrap">
-      <p className="eyebrow">Endpoint selecionado</p>
+      <p className="eyebrow">{tr('Endpoint selecionado')}</p>
       <div className="endpoint-heading">
         <span className={`method-badge method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</span>
         <h1>{endpoint.path}</h1>
       </div>
-      <p className="endpoint-description">{endpoint.description}</p>
+      <p className="endpoint-description">{tr(endpoint.description)}</p>
       {usesGoogleLogin && (
         <button className="open-google-login" type="button" onClick={() => setGoogleLoginOpen(true)}>
-          <span>G</span> Obter ID token do Google
+          <span>G</span> {tr('Obter ID token do Google')}
         </button>
       )}
       <RequestBuilder
@@ -165,10 +181,12 @@ interface ResponseVariables {
   refreshToken?: string
   sessionId?: string
   publicKeyChallenge?: string
+  publicKeyChallengeWasNull?: boolean
   deviceId?: string
   uploadUrl?: string
   objectKey?: string
   resetToken?: string
+  resetLink?: string
 }
 
 function findResponseVariables(value: unknown, found: ResponseVariables = {}): ResponseVariables {
@@ -179,10 +197,14 @@ function findResponseVariables(value: unknown, found: ResponseVariables = {}): R
   if (typeof record.refreshToken === 'string') found.refreshToken = record.refreshToken
   if (typeof record.sessionId === 'string') found.sessionId = record.sessionId
   if (typeof record.publicKeyChallenge === 'string') found.publicKeyChallenge = record.publicKeyChallenge
+  if (Object.hasOwn(record, 'publicKeyChallenge') && record.publicKeyChallenge === null) {
+    found.publicKeyChallengeWasNull = true
+  }
   if (typeof record.deviceId === 'string') found.deviceId = record.deviceId
   if (typeof record.uploadUrl === 'string') found.uploadUrl = record.uploadUrl
   if (typeof record.objectKey === 'string') found.objectKey = record.objectKey
   if (typeof record.resetToken === 'string') found.resetToken = record.resetToken
+  if (typeof record.resetLink === 'string') found.resetLink = record.resetLink
 
   for (const nestedValue of Object.values(record)) {
     findResponseVariables(nestedValue, found)
@@ -196,6 +218,24 @@ function getIdentifierFromBody(body: string) {
     return typeof parsedBody.identifier === 'string' ? parsedBody.identifier : ''
   } catch {
     return ''
+  }
+}
+
+function isTrustedDeviceLogin(body: string) {
+  try {
+    const parsedBody = JSON.parse(body) as { trustThisDevice?: unknown }
+    return parsedBody.trustThisDevice === true
+  } catch {
+    return false
+  }
+}
+
+function getResetTokenFromLink(resetLink?: string) {
+  if (!resetLink) return undefined
+  try {
+    return new URL(resetLink, window.location.origin).searchParams.get('token') ?? undefined
+  } catch {
+    return resetLink.match(/[?&]token=([^&]+)/)?.[1]
   }
 }
 

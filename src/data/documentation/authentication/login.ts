@@ -15,10 +15,12 @@ export const loginDocumentation: EndpointDocumentation = {
     'Abra Segurança → Verificações → Verificar código e envie o código recebido.',
     'Depois da validação, execute Login novamente com as mesmas credenciais.',
     'Se a resposta incluir publicKeyChallenge e deviceId, use Segurança → Dispositivos → Verificar dispositivo.',
-    'Após reconhecer o dispositivo, execute Login novamente para concluir a autenticação e receber os tokens.',
+    'A verificação do dispositivo apenas confirma o dispositivo atual; o utilizador já estará autenticado e não precisará executar Login novamente.',
   ],
   notes: [
     'accessToken, refreshToken, sessionId, publicKeyChallenge e deviceId são guardados automaticamente quando aparecem na resposta.',
+    'Se trustThisDevice for true e a API devolver publicKeyChallenge igual a null, o portal considera a chave do dispositivo inválida ou revogada e gera um novo par Ed25519 no próximo Login.',
+    'Uma chave estável continua sendo reutilizada enquanto o backend devolver um challenge válido para o dispositivo reconhecido.',
     'A resposta da API não é alterada pelo portal.',
   ],
   fields: [

@@ -1,13 +1,16 @@
+import { useI18n } from '../i18n/i18nContext'
+
 export function Footer() {
+  const { tr } = useI18n()
   return (
     <footer className="footer">
-      <span>© 2026 Teste API</span>
+      <span>© 2026 {tr('Teste API')}</span>
       <a
         className="linkedin-link"
         href="https://www.linkedin.com/in/manuel-muanza/"
         target="_blank"
         rel="noreferrer"
-        aria-label="Perfil no LinkedIn"
+        aria-label={tr('Perfil no LinkedIn')}
         title="LinkedIn"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

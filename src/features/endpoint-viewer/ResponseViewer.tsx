@@ -1,4 +1,5 @@
 import type { ApiResult } from '../../shared/types/endpoint'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 function colorizeJson(data: unknown) {
   const json = JSON.stringify(data, null, 2) ?? String(data)
@@ -28,6 +29,7 @@ interface ResponseViewerProps {
 }
 
 export function ResponseViewer({ result, loading }: ResponseViewerProps) {
+  const { tr } = useI18n()
   const hasResponseContent = result !== null && result.data !== null
   const responseContent = hasResponseContent
     ? JSON.stringify(result.data) ?? String(result.data)
@@ -36,12 +38,12 @@ export function ResponseViewer({ result, loading }: ResponseViewerProps) {
   return (
     <section className="panel">
       <div className="response-header">
-        <h2>Resposta</h2>
-        {loading && <span className="response-loading-label"><span className="loader-dot" /> Processando...</span>}
+        <h2>{tr('Resposta')}</h2>
+        {loading && <span className="response-loading-label"><span className="loader-dot" /> {tr('Processando...')}</span>}
         {!loading && result && (
           <div className="response-meta">
             <span className={`status ${getStatusClass(result.status)}`}>
-              {result.status === 0 ? 'Erro de conexão' : `Status: ${result.status}`}
+              {result.status === 0 ? tr('Erro de conexão') : `Status: ${result.status}`}
             </span>
             {result.status !== 0 && <span>{result.duration} ms</span>}
             <span>{new Blob([responseContent]).size} B</span>

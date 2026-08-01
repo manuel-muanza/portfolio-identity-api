@@ -24,9 +24,13 @@ function toPem(base64: string, label: 'PUBLIC KEY' | 'PRIVATE KEY') {
   return `-----BEGIN ${label}-----\n${lines}\n-----END ${label}-----`
 }
 
-export async function getOrCreateDeviceKeys(identifier: string): Promise<DeviceKeys> {
-  const normalizedIdentifier = identifier.trim().toLowerCase().split('@')[0]
+export async function getOrCreateDeviceKeys(identifier: string, forceRotation = false): Promise<DeviceKeys> {
+  const normalizedIdentifier = identifier.trim().toLowerCase()
   const storagePrefix = `api-test.keys.${normalizedIdentifier}`
+  if (forceRotation) {
+    localStorage.removeItem(`${storagePrefix}.private`)
+    localStorage.removeItem(`${storagePrefix}.public`)
+  }
   const storedPrivateKey = localStorage.getItem(`${storagePrefix}.private`)
   const storedPublicKey = localStorage.getItem(`${storagePrefix}.public`)
 

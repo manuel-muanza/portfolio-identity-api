@@ -1,4 +1,5 @@
 import type { Endpoint } from '../../shared/types/endpoint'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 interface EndpointDocumentationProps {
   endpoint: Endpoint
@@ -8,13 +9,14 @@ interface EndpointDocumentationProps {
 
 export function EndpointDocumentation({ endpoint, open, onClose }: EndpointDocumentationProps) {
   const documentation = endpoint.documentation
+  const { tr } = useI18n()
 
   return (
     <>
       <button
         className={`documentation-backdrop ${open ? 'visible' : ''}`}
         type="button"
-        aria-label="Fechar documentação"
+        aria-label={tr('Fechar documentação')}
         tabIndex={open ? 0 : -1}
         onClick={onClose}
       />
@@ -27,44 +29,44 @@ export function EndpointDocumentation({ endpoint, open, onClose }: EndpointDocum
             </svg>
           </span>
           <div>
-            <strong>Documentação</strong>
+            <strong>{tr('Documentação')}</strong>
             <small>{endpoint.method} {endpoint.path}</small>
           </div>
-          <button className="documentation-close" type="button" aria-label="Fechar documentação" onClick={onClose}>×</button>
+          <button className="documentation-close" type="button" aria-label={tr('Fechar documentação')} onClick={onClose}>×</button>
         </header>
 
         <div className="documentation-content">
           {documentation ? (
             <>
-              <p>{documentation.overview}</p>
+              <p>{tr(documentation.overview)}</p>
               {documentation.requirements?.length ? (
                 <div className="documentation-section">
-                  <h3>Requisitos</h3>
+                  <h3>{tr('Requisitos')}</h3>
                   <ul>
-                    {documentation.requirements.map((requirement) => <li key={requirement}>{requirement}</li>)}
+                    {documentation.requirements.map((requirement) => <li key={requirement}>{tr(requirement)}</li>)}
                   </ul>
                 </div>
               ) : null}
               {documentation.steps?.length ? (
                 <div className="documentation-section">
-                  <h3>Fluxo recomendado</h3>
+                  <h3>{tr('Fluxo recomendado')}</h3>
                   <ol className="documentation-steps">
-                    {documentation.steps.map((step) => <li key={step}>{step}</li>)}
+                    {documentation.steps.map((step) => <li key={step}>{tr(step)}</li>)}
                   </ol>
                 </div>
               ) : null}
               {documentation.fields?.length ? (
                 <div className="documentation-section">
-                  <h3>Campos da requisição</h3>
+                  <h3>{tr('Campos da requisição')}</h3>
                   <div className="documentation-fields">
                     {documentation.fields.map((field) => (
                       <div className="documentation-field" key={field.name}>
                         <div>
                           <code>{field.name}</code>
                           <span className="field-type">{field.type}</span>
-                          {field.required && <span className="field-required">obrigatório</span>}
+                          {field.required && <span className="field-required">{tr('obrigatório')}</span>}
                         </div>
-                        <p>{field.description}</p>
+                        <p>{tr(field.description)}</p>
                       </div>
                     ))}
                   </div>
@@ -72,15 +74,15 @@ export function EndpointDocumentation({ endpoint, open, onClose }: EndpointDocum
               ) : null}
               {documentation.notes?.length ? (
                 <div className="documentation-section documentation-notes">
-                  <h3>Observações</h3>
+                  <h3>{tr('Observações')}</h3>
                   <ul>
-                    {documentation.notes.map((note) => <li key={note}>{note}</li>)}
+                    {documentation.notes.map((note) => <li key={note}>{tr(note)}</li>)}
                   </ul>
                 </div>
               ) : null}
             </>
           ) : (
-            <p className="documentation-empty">A documentação deste endpoint poderá ser adicionada em <code>endpointCollections.ts</code>.</p>
+            <p className="documentation-empty">{tr('A documentação deste endpoint poderá ser adicionada em')} <code>endpointCollections.ts</code>.</p>
           )}
         </div>
       </aside>

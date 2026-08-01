@@ -5,6 +5,7 @@ import { BodyEditor } from './BodyEditor'
 import { HeadersEditor } from './HeadersEditor'
 import { ImageUploadEditor } from './ImageUploadEditor'
 import { VariablesEditor } from './VariablesEditor'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 type Tab = 'params' | 'headers' | 'body'
 
@@ -19,6 +20,7 @@ interface RequestBuilderProps {
 
 export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, onOpenDocumentation }: RequestBuilderProps) {
   const { sessionId, deviceId, uploadUrl, resetToken } = useAuth()
+  const { tr } = useI18n()
   const hasBody = endpoint.requestBody !== undefined || endpoint.bodyType === 'binary'
   const [tab, setTab] = useState<Tab>(hasBody ? 'body' : 'params')
   const [headers, setHeaders] = useState<KeyValuePair[]>([
@@ -57,7 +59,7 @@ export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, 
           disabled={sending || (endpoint.bodyType === 'binary' && binaryBody === null)}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
-          {sending ? 'A enviar...' : 'Enviar requisição'}
+          {sending ? tr('A enviar...') : tr('Enviar requisição')}
         </button>
       </div>
       <section className="panel">
@@ -70,7 +72,7 @@ export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, 
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
             </svg>
-            Documentação
+            {tr('Documentação')}
           </button>
         </div>
         {tab === 'params' && <VariablesEditor variables={variables} onChange={setVariables} />}
@@ -85,7 +87,7 @@ export function RequestBuilder({ endpoint, body, sending, onBodyChange, onSend, 
               }} />
             : endpoint.requestBody
               ? <BodyEditor body={body} onChange={onBodyChange} />
-              : <div className="editor empty-editor">Esta requisição não possui body.</div>
+              : <div className="editor empty-editor">{tr('Esta requisição não possui body.')}</div>
         )}
       </section>
     </>

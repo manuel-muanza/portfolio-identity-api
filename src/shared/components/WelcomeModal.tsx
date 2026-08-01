@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useI18n } from '../i18n/i18nContext'
 
 const WELCOME_STORAGE_KEY = 'api-test.welcome-seen'
 
 export function WelcomeModal() {
+  const { tr } = useI18n()
   const [open, setOpen] = useState(() => localStorage.getItem(WELCOME_STORAGE_KEY) !== 'true')
 
   function closeModal() {
@@ -23,31 +25,29 @@ export function WelcomeModal() {
         </div>
 
         <div className="welcome-content">
-          <span className="welcome-eyebrow">Demonstração técnica</span>
-          <h1 id="welcome-title">Bem-vindo ao Teste de API</h1>
+          <span className="welcome-eyebrow">{tr('Demonstração técnica')}</span>
+          <h1 id="welcome-title">{tr('Bem-vindo ao Teste de API')}</h1>
           <p>
-            Este portal foi desenvolvido como uma demonstração prática de competências em engenharia de software,
-            arquitetura e integração de sistemas.
+            {tr('Este portal foi desenvolvido como uma demonstração prática de competências em engenharia de software, arquitetura e integração de sistemas.')}
           </p>
           <p>
-            Os fluxos aqui apresentados foram preparados para facilitar uma avaliação técnica em contextos
-            profissionais e possíveis oportunidades de colaboração. Alguns dados são exclusivamente demonstrativos.
+            {tr('Os fluxos aqui apresentados foram preparados para facilitar uma avaliação técnica em contextos profissionais e possíveis oportunidades de colaboração. Alguns dados são exclusivamente demonstrativos.')}
           </p>
 
           <div className="welcome-highlights">
-            <span>Arquitetura</span>
-            <span>Segurança</span>
-            <span>Integrações</span>
-            <span>Experiência de API</span>
+            <span>{tr('Arquitetura')}</span>
+            <span>{tr('Segurança')}</span>
+            <span>{tr('Integrações')}</span>
+            <span>{tr('Experiência de API')}</span>
           </div>
 
           <button type="button" onClick={closeModal}>
-            Explorar demonstração
+            {tr('Explorar demonstração')}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </button>
-          <small>Esta mensagem será exibida apenas neste primeiro acesso.</small>
+          <small>{tr('Esta mensagem será exibida apenas neste primeiro acesso.')}</small>
         </div>
       </section>
     </div>

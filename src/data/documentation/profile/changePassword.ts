@@ -6,6 +6,7 @@ export const changePasswordDocumentation: EndpointDocumentation = {
     'A requisição deve possuir um access token válido.',
     'A palavra-passe atual deve estar correta.',
     'newPassword e confirmPassword devem possuir o mesmo valor.',
+    'A nova palavra-passe não pode repetir nenhuma das últimas cinco senhas utilizadas.',
   ],
   fields: [
     {
@@ -30,5 +31,6 @@ export const changePasswordDocumentation: EndpointDocumentation = {
   notes: [
     'O Bearer token é adicionado automaticamente pelo portal.',
     'Depois da alteração, sessões ou tokens existentes podem ser revogados conforme a política da API.',
+    'A API mantém um histórico e impede a reutilização das últimas cinco senhas.',
   ],
 }

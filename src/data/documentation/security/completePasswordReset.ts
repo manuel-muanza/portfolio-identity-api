@@ -5,6 +5,7 @@ export const completePasswordResetDocumentation: EndpointDocumentation = {
   requirements: [
     'O resetToken deve estar válido e não pode ter expirado.',
     'newPassword e confirmPassword devem possuir o mesmo valor.',
+    'A nova palavra-passe não pode ser igual a nenhuma das últimas cinco senhas utilizadas.',
   ],
   steps: [
     'Execute Validar operação para confirmar que o resetToken está válido.',
@@ -28,5 +29,6 @@ export const completePasswordResetDocumentation: EndpointDocumentation = {
   notes: [
     'Esta requisição é pública e não envia Bearer token.',
     'O placeholder {{resetToken}} é substituído automaticamente.',
+    'A API aplica uma política de histórico e rejeita a reutilização das últimas cinco senhas.',
   ],
 }

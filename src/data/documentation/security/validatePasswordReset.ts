@@ -8,7 +8,7 @@ export const validatePasswordResetDocumentation: EndpointDocumentation = {
   ],
   steps: [
     'Execute Solicitar reposição e conclua as verificações indicadas pela API.',
-    'Quando a resposta devolver resetToken, o portal guardará o valor automaticamente.',
+    'Quando a resposta devolver resetLink, o portal extrairá e guardará resetToken automaticamente.',
     'Execute Validar operação antes de alterar a palavra-passe.',
   ],
   notes: [

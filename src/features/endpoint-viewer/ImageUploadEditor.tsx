@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 interface ImageUploadEditorProps {
   onConfirm: (image: Blob, contentType: string) => void
 }
 
 export function ImageUploadEditor({ onConfirm }: ImageUploadEditorProps) {
+  const { tr } = useI18n()
   const [file, setFile] = useState<File | null>(null)
   const [imageUrl, setImageUrl] = useState('')
   const [preview, setPreview] = useState('')
@@ -43,15 +45,15 @@ export function ImageUploadEditor({ onConfirm }: ImageUploadEditorProps) {
         image = file
       } else {
         const response = await fetch(imageUrl)
-        if (!response.ok) throw new Error(`Não foi possível obter a imagem: HTTP ${response.status}`)
+        if (!response.ok) throw new Error(`${tr('Não foi possível obter a imagem:')} HTTP ${response.status}`)
         image = await response.blob()
       }
-      if (!image.type.startsWith('image/')) throw new Error('O conteúdo selecionado não é uma imagem válida.')
+      if (!image.type.startsWith('image/')) throw new Error(tr('O conteúdo selecionado não é uma imagem válida.'))
       onConfirm(image, image.type)
       setPrepared(true)
     } catch (caughtError) {
       setPrepared(false)
-      setError(caughtError instanceof Error ? caughtError.message : 'Não foi possível preparar a imagem.')
+      setError(caughtError instanceof Error ? caughtError.message : tr('Não foi possível preparar a imagem.'))
     } finally {
       setPreparing(false)
     }
@@ -63,11 +65,11 @@ export function ImageUploadEditor({ onConfirm }: ImageUploadEditorProps) {
         <label className="image-file-picker">
           <input type="file" accept="image/*" onChange={(event) => selectFile(event.target.files?.[0] ?? null)} />
           <span className="image-picker-icon">＋</span>
-          <strong>Selecionar imagem</strong>
-          <small>PNG, JPEG, WEBP ou outro formato de imagem</small>
+          <strong>{tr('Selecionar imagem')}</strong>
+          <small>{tr('PNG, JPEG, WEBP ou outro formato de imagem')}</small>
         </label>
         <div className="image-url-field">
-          <label htmlFor="image-url">Ou utilize a URL de uma imagem</label>
+          <label htmlFor="image-url">{tr('Ou utilize a URL de uma imagem')}</label>
           <input
             id="image-url"
             type="url"
@@ -80,9 +82,9 @@ export function ImageUploadEditor({ onConfirm }: ImageUploadEditorProps) {
 
       {preview && (
         <div className="image-preview">
-          <img src={preview} alt="Preview da imagem selecionada" onError={() => setError('Não foi possível carregar o preview da imagem.')} />
+          <img src={preview} alt={tr('Preview da imagem selecionada')} onError={() => setError(tr('Não foi possível carregar o preview da imagem.'))} />
           <div>
-            <strong>{file?.name ?? 'Imagem externa'}</strong>
+            <strong>{file?.name ?? tr('Imagem externa')}</strong>
             <small>{file ? `${Math.round(file.size / 1024)} KB · ${file.type}` : imageUrl}</small>
           </div>
         </div>
@@ -96,7 +98,7 @@ export function ImageUploadEditor({ onConfirm }: ImageUploadEditorProps) {
         disabled={preparing || (!file && !imageUrl)}
         onClick={prepareImage}
       >
-        {preparing ? 'A preparar...' : prepared ? '✓ Imagem preparada' : 'Confirmar imagem'}
+        {preparing ? tr('A preparar...') : prepared ? tr('✓ Imagem preparada') : tr('Confirmar imagem')}
       </button>
     </div>
   )

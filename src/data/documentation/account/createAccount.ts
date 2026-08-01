@@ -5,6 +5,7 @@ export const createAccountDocumentation: EndpointDocumentation = {
     'Cria uma nova conta de utilizador utilizando os dados pessoais, o identificador e a palavra-passe informados.',
   requirements: [
     'O identificador ainda não deve estar associado a outra conta.',
+    'O e-mail deve conter uma referência ao primeiro e ao último nome do utilizador, e não apenas um nome isolado.',
     'Todos os campos obrigatórios devem ser enviados no formato JSON.',
   ],
   steps: [
@@ -37,7 +38,7 @@ export const createAccountDocumentation: EndpointDocumentation = {
       name: 'identifier',
       type: 'string',
       required: true,
-      description: 'Identificador da nova conta, como o endereço de e-mail.',
+      description: 'E-mail da nova conta, contendo primeiro e último nome, por exemplo manuel.muanza@gmail.com.',
     },
     {
       name: 'password',

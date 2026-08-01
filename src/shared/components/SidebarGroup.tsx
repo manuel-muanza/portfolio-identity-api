@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Endpoint, EndpointCollection, EndpointGroup } from '../types/endpoint'
 import { SidebarEndpoint } from './SidebarEndpoint'
+import { useI18n } from '../i18n/i18nContext'
 
 interface SidebarGroupProps {
   collection: EndpointCollection
@@ -23,12 +24,13 @@ function CollectionIcon({ type }: { type: EndpointCollection['icon'] }) {
 
 export function SidebarGroup({ collection, selectedId, onSelect }: SidebarGroupProps) {
   const [open, setOpen] = useState(true)
+  const { tr } = useI18n()
 
   return (
     <section className="sidebar-group">
       <button className="sidebar-group-button" type="button" onClick={() => setOpen((value) => !value)}>
         <span className="group-icon"><CollectionIcon type={collection.icon} /></span>
-        {collection.name}
+        {tr(collection.name)}
         <span className={`chevron ${open ? '' : 'closed'}`}>⌄</span>
       </button>
       {open && (
@@ -65,6 +67,7 @@ function SidebarSubgroup({
   onSelect: (endpoint: Endpoint) => void
 }) {
   const [open, setOpen] = useState(true)
+  const { tr } = useI18n()
 
   return (
     <div className="sidebar-subgroup">
@@ -74,7 +77,7 @@ function SidebarSubgroup({
             <path d="M3 6h6l2 2h10v10H3Z" />
           </svg>
         </span>
-        {group.name}
+        {tr(group.name)}
         <span className={`chevron ${open ? '' : 'closed'}`}>⌄</span>
       </button>
       {open && (

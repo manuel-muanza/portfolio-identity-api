@@ -3,8 +3,10 @@ import { endpointCollections } from '../data/endpointCollections'
 import { EndpointDetails } from '../features/endpoint-viewer/EndpointDetails'
 import { MainLayout } from '../shared/components/MainLayout'
 import type { Endpoint } from '../shared/types/endpoint'
+import { useI18n } from '../shared/i18n/i18nContext'
 
 export function DeveloperPortalPage() {
+  const { tr } = useI18n()
   const initialEndpoint = endpointCollections[0].endpoints[0]
   const [openEndpoints, setOpenEndpoints] = useState<Endpoint[]>([initialEndpoint])
   const [activeEndpointId, setActiveEndpointId] = useState(initialEndpoint.id)
@@ -41,7 +43,7 @@ export function DeveloperPortalPage() {
       onMenuToggle={() => setSidebarOpen((value) => !value)}
       onSelect={handleSelect}
     >
-      <div className="endpoint-tabs" role="tablist" aria-label="Requisições abertas">
+      <div className="endpoint-tabs" role="tablist" aria-label={tr('Requisições abertas')}>
         {openEndpoints.map((endpoint) => (
           <div className={`endpoint-tab ${endpoint.id === activeEndpointId ? 'active' : ''}`} key={endpoint.id}>
             <button
@@ -52,13 +54,13 @@ export function DeveloperPortalPage() {
               onClick={() => setActiveEndpointId(endpoint.id)}
             >
               <span className={`method method-${endpoint.method.toLowerCase()}`}>{endpoint.method}</span>
-              <span>{endpoint.name}</span>
+              <span>{tr(endpoint.name)}</span>
             </button>
             {openEndpoints.length > 1 && (
               <button
                 className="endpoint-tab-close"
                 type="button"
-                aria-label={`Fechar ${endpoint.name}`}
+                aria-label={`${tr('Fechar')} ${tr(endpoint.name)}`}
                 onClick={() => closeEndpoint(endpoint.id)}
               >
                 ×

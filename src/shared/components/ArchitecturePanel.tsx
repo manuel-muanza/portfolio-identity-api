@@ -2,6 +2,7 @@ interface ArchitecturePanelProps {
   open: boolean
   onClose: () => void
 }
+import { useI18n } from '../i18n/i18nContext'
 
 const architectureItems = [
   'Domain-Driven Design (DDD)',
@@ -50,12 +51,13 @@ const technologies = [
 ]
 
 export function ArchitecturePanel({ open, onClose }: ArchitecturePanelProps) {
+  const { tr } = useI18n()
   return (
     <>
       <button
         className={`architecture-backdrop ${open ? 'visible' : ''}`}
         type="button"
-        aria-label="Fechar arquitetura"
+        aria-label={tr('Fechar arquitetura')}
         tabIndex={open ? 0 : -1}
         onClick={onClose}
       />
@@ -70,33 +72,33 @@ export function ArchitecturePanel({ open, onClose }: ArchitecturePanelProps) {
             </svg>
           </div>
           <div>
-            <h2>Arquitetura e práticas</h2>
-            <p>Decisões técnicas demonstradas neste projeto</p>
+            <h2>{tr('Arquitetura e práticas')}</h2>
+            <p>{tr('Decisões técnicas demonstradas neste projeto')}</p>
           </div>
-          <button className="architecture-close" type="button" aria-label="Fechar" onClick={onClose}>×</button>
+          <button className="architecture-close" type="button" aria-label={tr('Fechar')} onClick={onClose}>×</button>
         </header>
 
         <div className="architecture-panel-content">
           <p className="architecture-intro">
-            O projeto demonstra experiência na construção de sistemas seguros, escaláveis e organizados em torno do domínio.
+            {tr('O projeto demonstra experiência na construção de sistemas seguros, escaláveis e organizados em torno do domínio.')}
           </p>
 
           <section className="architecture-section">
-            <h3>Abordagem arquitetural</h3>
+            <h3>{tr('Abordagem arquitetural')}</h3>
             <div className="architecture-grid">
-              {architectureItems.map((item) => <span key={item}>{item}</span>)}
+              {architectureItems.map((item) => <span key={item}>{tr(item)}</span>)}
             </div>
           </section>
 
           <section className="architecture-section">
-            <h3>Padrões e práticas</h3>
+            <h3>{tr('Padrões e práticas')}</h3>
             <ul className="practice-list">
-              {practiceItems.map((item) => <li key={item}>{item}</li>)}
+              {practiceItems.map((item) => <li key={item}>{tr(item)}</li>)}
             </ul>
           </section>
 
           <section className="architecture-section">
-            <h3>Tecnologias utilizadas</h3>
+            <h3>{tr('Tecnologias utilizadas')}</h3>
             <div className="technology-list">
               {technologies.map((technology) => <span key={technology}>{technology}</span>)}
             </div>

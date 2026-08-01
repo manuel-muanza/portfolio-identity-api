@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 export interface MfaSetupData {
   secret: string
@@ -12,6 +13,7 @@ interface MfaSetupModalProps {
 }
 
 export function MfaSetupModal({ data, onContinue }: MfaSetupModalProps) {
+  const { tr } = useI18n()
   const [qrImage, setQrImage] = useState('')
   const [copied, setCopied] = useState(false)
 
@@ -47,33 +49,33 @@ export function MfaSetupModal({ data, onContinue }: MfaSetupModalProps) {
             </svg>
           </span>
           <div>
-            <h2 id="mfa-modal-title">Configure o seu autenticador</h2>
-            <p>Adicione uma nova conta TOTP para proteger o seu acesso.</p>
+            <h2 id="mfa-modal-title">{tr('Configure o seu autenticador')}</h2>
+            <p>{tr('Adicione uma nova conta TOTP para proteger o seu acesso.')}</p>
           </div>
         </div>
 
         <div className="mfa-modal-content">
           <ol className="mfa-instructions">
-            <li>Abra a sua aplicação autenticadora.</li>
-            <li>Escolha adicionar uma conta e leia o QR Code.</li>
-            <li>Se necessário, use a chave manual apresentada abaixo.</li>
+            <li>{tr('Abra a sua aplicação autenticadora.')}</li>
+            <li>{tr('Escolha adicionar uma conta e leia o QR Code.')}</li>
+            <li>{tr('Se necessário, use a chave manual apresentada abaixo.')}</li>
           </ol>
 
           <div className="mfa-qr">
             {qrImage ? <img src={qrImage} alt="QR Code para configurar MFA" /> : <span className="mfa-qr-loader" />}
           </div>
 
-          <label className="mfa-secret-label" htmlFor="mfa-secret">Chave de configuração</label>
+          <label className="mfa-secret-label" htmlFor="mfa-secret">{tr('Chave de configuração')}</label>
           <div className="mfa-secret-row">
             <input id="mfa-secret" value={data.secret} readOnly />
-            <button type="button" onClick={copySecret}>{copied ? 'Copiado!' : 'Copiar'}</button>
+            <button type="button" onClick={copySecret}>{copied ? tr('Copiado!') : tr('Copiar')}</button>
           </div>
 
-          <p className="mfa-warning">Não compartilhe esta chave. Ela permite gerar os códigos da sua conta.</p>
+          <p className="mfa-warning">{tr('Não compartilhe esta chave. Ela permite gerar os códigos da sua conta.')}</p>
         </div>
 
         <div className="mfa-modal-footer">
-          <button type="button" onClick={onContinue}>Continuar</button>
+          <button type="button" onClick={onContinue}>{tr('Continuar')}</button>
         </div>
       </section>
     </div>

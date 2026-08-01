@@ -29,5 +29,6 @@ export const requestPasswordResetDocumentation: EndpointDocumentation = {
   notes: [
     'Esta requisição é pública e não envia Bearer token.',
     'Se a resposta contiver sessionId, o portal guardará o valor automaticamente como verificationToken.',
+    'Se a resposta contiver resetLink, o portal extrairá o parâmetro token e guardará automaticamente como resetToken.',
   ],
 }

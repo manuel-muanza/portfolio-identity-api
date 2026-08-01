@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useI18n } from '../../shared/i18n/i18nContext'
 
 const GOOGLE_CLIENT_ID = '9336721402-p72j8nkavb0eidbjtf1vj6a50nqigsa5.apps.googleusercontent.com'
 const GOOGLE_SCRIPT_ID = 'google-identity-services'
@@ -33,6 +34,7 @@ interface GoogleLoginModalProps {
 }
 
 export function GoogleLoginModal({ open, onToken, onClose }: GoogleLoginModalProps) {
+  const { tr } = useI18n()
   const buttonContainer = useRef<HTMLDivElement>(null)
   const [token, setToken] = useState('')
   const [copied, setCopied] = useState(false)
@@ -95,33 +97,33 @@ export function GoogleLoginModal({ open, onToken, onClose }: GoogleLoginModalPro
         <header className="google-modal-header">
           <span className="google-logo" aria-hidden="true">G</span>
           <div>
-            <h2 id="google-login-title">Login com Google</h2>
-            <p>Obtenha o ID token para testar a autenticação social.</p>
+            <h2 id="google-login-title">{tr('Login com Google')}</h2>
+            <p>{tr('Obtenha o ID token para testar a autenticação social.')}</p>
           </div>
-          <button type="button" aria-label="Fechar" onClick={onClose}>×</button>
+          <button type="button" aria-label={tr('Fechar')} onClick={onClose}>×</button>
         </header>
 
         <div className="google-modal-content">
           <p className="google-modal-instruction">
-            Entre com uma conta Google. O token recebido será adicionado automaticamente ao body da requisição.
+            {tr('Entre com uma conta Google. O token recebido será adicionado automaticamente ao body da requisição.')}
           </p>
 
           <div className="google-button-container" ref={buttonContainer}>
-            <span className="google-button-loading">A carregar login Google...</span>
+            <span className="google-button-loading">{tr('A carregar login Google...')}</span>
           </div>
 
           {token && (
             <div className="google-token-result">
-              <div className="google-token-status"><span>✓</span> ID token obtido e adicionado à requisição</div>
+              <div className="google-token-status"><span>✓</span> {tr('ID token obtido e adicionado à requisição')}</div>
               <label htmlFor="google-id-token">ID token</label>
               <textarea id="google-id-token" value={token} readOnly />
-              <button type="button" onClick={copyToken}>{copied ? 'Token copiado!' : 'Copiar token'}</button>
+              <button type="button" onClick={copyToken}>{copied ? tr('Token copiado!') : tr('Copiar token')}</button>
             </div>
           )}
         </div>
 
         <footer className="google-modal-footer">
-          <button type="button" disabled={!token} onClick={onClose}>Usar token e continuar</button>
+          <button type="button" disabled={!token} onClick={onClose}>{tr('Usar token e continuar')}</button>
         </footer>
       </section>
     </div>

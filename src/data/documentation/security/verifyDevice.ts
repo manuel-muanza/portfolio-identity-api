@@ -11,7 +11,7 @@ export const securityVerifyDeviceDocumentation: EndpointDocumentation = {
     'Conclua a verificação por código caso ela seja solicitada e execute Login novamente.',
     'Quando Login devolver publicKeyChallenge e deviceId, abra esta requisição.',
     'Ao enviar, o portal assina challenge com a chave privada Ed25519 e preenche signature automaticamente.',
-    'Depois da verificação do dispositivo, execute Login novamente.',
+    'Depois da verificação, o dispositivo estará confirmado para a sessão já autenticada; não é necessário executar Login novamente.',
   ],
   notes: [
     'A chave privada nunca é enviada para a API.',
